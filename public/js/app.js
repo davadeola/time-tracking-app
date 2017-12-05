@@ -8,7 +8,7 @@ class TimerDashBoard extends React.Component{
     setInterval(this.loadTimersFromServer, 5000);
   }
 
-  loadTimersFromServer=()={
+  loadTimersFromServer=()=>{
     client.getTimers((serverTimers)=>{
       this.setState({timers: serverTimers});
     })
@@ -21,6 +21,7 @@ class TimerDashBoard extends React.Component{
   createTimer=(timer)=>{
     const t = helpers.newTimer(timer);
     this.setState({timers: this.state.timers.concat(t)});
+    client.createTimer(t);
   }//creates a new array of timers then it concats t to them.
 
   handleEditFormSubmit =(attrs)=> {
@@ -42,7 +43,10 @@ class TimerDashBoard extends React.Component{
 
   deleteTimer=(timerId)=>{
     this.setState({timers: this.state.timers.filter(t => t.id != timerId)});
+    client.deleteTimer({id: timerId});
   }//used to delete items from the state
+
+
   updateTimers=(attrs)=>{
     this.setState({
       timers: this.state.timers.map((timer)=>{
@@ -56,6 +60,8 @@ class TimerDashBoard extends React.Component{
         }
       })
     });
+
+    client.updateTimer(attrs);
   }
 
 
@@ -72,6 +78,8 @@ class TimerDashBoard extends React.Component{
         }
       })
     });
+
+    client.startTimer({id: timerId, start: now});
   }
 
   stopTimer=(timerId)=>{
@@ -88,7 +96,9 @@ class TimerDashBoard extends React.Component{
           return timer;
         }
       })
-    })
+    });
+
+    client.stopTimer({id: timerId, stop: now});
   }
 
   render(){
